@@ -12,14 +12,14 @@ Este archivo es el tablero de trabajo del proyecto. Cada cambio se registra como
 
 | Área | Estado actual |
 | --- | --- |
-| Página | Landing page estática de una sola página en `code.html`. |
+| Página | Landing page estática de una sola página en `index.html`, lista para resolverse automáticamente como página principal en hosting web. |
 | Estilos | Tailwind CSS se carga por CDN y la configuración está embebida en el HTML. |
 | Diseño | La guía visual y los tokens de marca están documentados en `DESIGN.md`. |
 | Contenido | Incluye hero, contador, beneficios, stack de herramientas, resultados, programa, instructor, CTA, preguntas frecuentes y footer. |
 | Interactividad | Hay acordeones y un contador cuya fecha y enlaces de inscripción se administran desde `course-config.js`. |
 | Recursos | Los recursos locales viven en `images/`; el hero en capas utiliza las imágenes nuevas de estrategia de marketing, redes y producción, y “Transformación Real” usa `antes-despues.png`. También se usan algunas imágenes externas de Google. |
 | Licencia | GNU General Public License v3.0 (`GPL-3.0-only`) en `LICENSE`. |
-| Repositorio | Publicado en GitHub, rama `main`, con el commit inicial `6da0410`. |
+| Repositorio | GitHub en `DegolladoC/mayam-courses-landing`; el flujo rápido de publicación está documentado en `AGENTS.md`. |
 
 ## Hallazgos iniciales
 
@@ -27,7 +27,7 @@ Este archivo es el tablero de trabajo del proyecto. Cada cambio se registra como
 - [Resuelto; pendiente de revisión visual] La paleta oscura cuenta con tokens propios documentados en `DESIGN.md`.
 - [Resuelto] La carpeta de recursos y las referencias del código usan de forma consistente `images/` en minúsculas.
 - [Resuelto; falta capturar la fecha] El contador usa una fecha absoluta configurable desde `course-config.js`; mientras esté vacía muestra “Próxima fecha por confirmar”.
-- [Validado] `code.html` está codificado en UTF-8 y los caracteres españoles son correctos. La representación incorrecta detectada provenía de la salida de la terminal, no del archivo.
+- [Validado] `index.html` está codificado en UTF-8 y los caracteres españoles son correctos. La representación incorrecta detectada provenía de la salida de la terminal, no del archivo.
 - [Resuelto para CTA; enlaces legales pendientes] Los CTA de inscripción comparten el destino de `course-config.js` y “Ver temario completo” apunta a `#programa`.
 
 ## Plan de trabajo priorizado
@@ -69,7 +69,7 @@ El selector comparativo y el código de la alternativa descartada fueron elimina
 | 2026-07-17 | — | Hecho | Se creó este tablero y se documentó el inventario y los hallazgos iniciales. |
 | 2026-07-17 | T-01 | En revisión | Se definió la paleta oscura, se añadió detección del sistema, persistencia, estado accesible y control en móvil/escritorio. Los scripts pasan validación sintáctica y los contrastes principales miden entre 11.11:1 y 17.62:1. |
 | 2026-07-17 | T-02 | En revisión | Se renombró `Images/` a `images/`, incluido el índice de Git, y se verificó que `images/Nestor.jpg` coincide exactamente con la ruta usada por la página. |
-| 2026-07-17 | T-03 | En revisión | Se validó UTF-8 estricto y se comprobó que no existen secuencias mojibake en `code.html`; no fue necesario alterar el contenido. |
+| 2026-07-17 | T-03 | En revisión | Se validó UTF-8 estricto y se comprobó que no existen secuencias mojibake en el HTML principal; no fue necesario alterar el contenido. |
 | 2026-07-17 | — | Hecho | Se añadió `AGENTS.md` con las reglas de desarrollo y la actualización obligatoria de este tablero. |
 | 2026-07-17 | — | Hecho | Se añadió `LICENSE` con el texto oficial íntegro de GNU GPL v3 y se verificó contra `gnu.org`. |
 | 2026-07-17 | T-04 | En revisión | Se creó `course-config.js` para editar la fecha sin tocar el HTML. El contador admite fecha pendiente, fecha futura y finalización en cero; se validaron sintaxis, estructura y orden de carga. |
@@ -80,6 +80,8 @@ El selector comparativo y el código de la alternativa descartada fueron elimina
 | 2026-07-17 | T-12 | En revisión | Se consolidó la composición de capas, se cambió la imagen central por `laptop-persona-marketing.png` y se añadió intercambio por zona del cursor desde 768 px, toque/foco en tablet y una versión estática para celulares. Se retiró el comparador y se validó visualmente en Edge a 1440×1000 y 390×844. |
 | 2026-07-17 | T-12 | En revisión | Se duplicó la duración de la animación del hero: posiciones de 520 ms a 1040 ms y ajustes de profundidad/sombra de 220 ms a 440 ms. Se verificó que no permanecieran duraciones anteriores. |
 | 2026-07-17 | T-07 | En progreso | Se sustituyó la imagen externa de “Transformación Real” por `images/antes-despues.png`, con texto alternativo y carga diferida. Se validaron el archivo, la capitalización y las cinco referencias locales de la página. La optimización de peso continúa pendiente. |
+| 2026-07-17 | — | Hecho | Se configuró en `AGENTS.md` el flujo de publicación: “sube todo” permite commit y push directo desde `main`, reutiliza validaciones vigentes y actualiza una rama existente si ya tiene PR, sin crear ramas o PR adicionales. |
+| 2026-07-17 | — | Hecho | Se renombró `code.html` a `index.html` para que los servidores web reconozcan automáticamente la landing como documento principal; se validaron nuevamente sus scripts. |
 
 ## Próxima tarea propuesta
 
