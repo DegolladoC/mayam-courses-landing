@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 
-<html class="light" lang="es"><head>
+<html lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MAYAM - Creación de Contenido con IA</title>
+<script>
+        // Apply the preferred theme before painting the page to avoid a flash.
+        (() => {
+            const storageKey = 'mayam-theme';
+            let savedTheme = null;
+
+            try {
+                savedTheme = localStorage.getItem(storageKey);
+            } catch (error) {
+                // The system preference remains available if storage is blocked.
+            }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme === 'light' || savedTheme === 'dark'
+                ? savedTheme
+                : (prefersDark ? 'dark' : 'light');
+
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,500&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -58,10 +79,18 @@
                         "on-tertiary-fixed": "#001e2f",
                         "outline": "#75777f",
                         "surface-variant": "#e0e3e5",
+                        // Dark theme palette
+                        "dark-background": "#07111f",
+                        "dark-surface": "#0b1728",
+                        "dark-surface-high": "#13243a",
+                        "dark-on-surface": "#f4f7fb",
+                        "dark-on-surface-variant": "#bdc9d8",
+                        "dark-outline": "#71839b",
+                        "dark-accent": "#b2c5ff",
                         // Branding specific aliases from the provided list
                         "spark": "#356ee7", // Mapping secondary-container to spark for the UI logic
-                        "dark-navy": "#001b44", // Mapping primary-container
-                        "dark-mist": "#001f30", // Mapping tertiary-container
+                        "dark-navy": "#0b1728", // Dark surface and permanent brand panels
+                        "dark-mist": "#13243a", // Elevated dark surface
                         "mist": "#f2f4f6" // Mapping surface-container-low
                     },
                     "borderRadius": {
@@ -96,6 +125,7 @@
     </script>
 <style>
         body { font-family: 'Montserrat', sans-serif; font-weight: 400; }
+        :focus-visible { outline: 3px solid #89ceff; outline-offset: 3px; }
         h1, h2, h3, h4, .font-semibold-mont { font-family: 'Montserrat', sans-serif; font-weight: 600; }
         .italic-mont { font-family: 'Montserrat', sans-serif; font-weight: 500; font-style: italic; }
         
@@ -122,26 +152,28 @@
         }
     </style>
 </head>
-<body class="bg-surface text-on-surface transition-colors duration-300 overflow-x-hidden">
+<body class="bg-surface text-on-surface dark:bg-dark-background dark:text-dark-on-surface transition-colors duration-300 overflow-x-hidden">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-dark-navy/80 backdrop-blur-md border-b border-outline-variant/20">
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-dark-surface/90 backdrop-blur-md border-b border-outline-variant/20 dark:border-dark-outline/30">
 <div class="flex justify-between items-center px-margin-safe py-4 max-w-container-max mx-auto">
 <div class="flex items-center gap-4">
 <img alt="MAYAM Logo" class="h-8 dark:hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLczJ4W0amWmrnvQNe2Po8BxvPWQgBI-0vDE17g72NzKstBDbMB5BAmUsPD7qm4Wn7fMSNm8pb8A-bNRUGD_P2oqe7nxrtmJoVciJ_SAezF8FlixpRdAUgVur7c_wIyKrLtB-MqtVJM7H24UbfsRBzKb6B1L40zzGDZ-9hn-QJbNqUoujbRv_-bSl1qs4UawXd_3R6JmeFWU1TtlrRgphA0_QnaXzfmJCndnv43Bipwfrk1ppaR7bmzJ0Q4RbvzYjLOlm0vFpnT0Q"/>
 <img alt="MAYAM Logo Dark" class="h-8 hidden dark:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA03Mwa3hrTMX9bbzNn2ij6qV6VgQcwGWZ-8sFpjqK7tYZVGYnGZNnkQhFyXUsBTo8SqwqG9kDOr6brgB4KZHTWiDT4U29-WzyNtfvVkdxjy7tg9mM9xg1WUsVlF7AyWM0CvvPD1ytMXJbNqBOIVCyK-ikR_ZFnxBneIZfn7dk0B2MeUkv09Aw_Vf3UlajDbwN45g8yY9cnLLVegebb7wCjmcGysuXj_U8CsVj8shEAq17v5tFdJ7QaxPlpfOx5l5hMlXb_ypqyyY8"/>
-<span class="font-semibold-mont text-xl text-on-surface dark:text-surface-bright"></span>
+<span class="font-semibold-mont text-xl text-on-surface dark:text-dark-on-surface"></span>
 </div>
+<div class="flex items-center gap-2">
 <div class="hidden md:flex gap-8 items-center">
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#programa">Programa</a>
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#stack">Stack</a>
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#instructor">Instructor</a>
-<button class="p-2 rounded-full hover:bg-surface-container-high dark:hover:bg-dark-mist transition-all" onclick="document.documentElement.classList.toggle('dark')">
-<span class="material-symbols-outlined text-secondary dark:text-inverse-primary">dark_mode</span>
-</button>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#programa">Programa</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#stack">Stack</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#instructor">Instructor</a>
 </div>
-<button class="md:hidden p-2">
+<button aria-label="Activar modo oscuro" aria-pressed="false" class="p-2 rounded-full text-secondary dark:text-dark-accent hover:bg-surface-container-high dark:hover:bg-dark-surface-high transition-all" id="theme-toggle" onclick="toggleTheme()" title="Activar modo oscuro" type="button">
+<span aria-hidden="true" class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+</button>
+<button aria-label="Abrir menú" class="md:hidden p-2 text-on-surface dark:text-dark-on-surface" type="button">
 <span class="material-symbols-outlined">menu</span>
 </button>
+</div>
 </div>
 </nav>
 <!-- Hero Section -->
@@ -557,6 +589,44 @@
 </div>
 </footer>
 <script>
+        const themeStorageKey = 'mayam-theme';
+
+        function updateThemeControl() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const button = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-icon');
+            const actionLabel = isDark ? 'Activar modo claro' : 'Activar modo oscuro';
+
+            if (button) {
+                button.setAttribute('aria-label', actionLabel);
+                button.setAttribute('aria-pressed', String(isDark));
+                button.setAttribute('title', actionLabel);
+            }
+
+            if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+
+        function setTheme(theme, persist = true) {
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = theme;
+
+            if (persist) {
+                try {
+                    localStorage.setItem(themeStorageKey, theme);
+                } catch (error) {
+                    // The theme still works for the current page if storage is blocked.
+                }
+            }
+
+            updateThemeControl();
+        }
+
+        function toggleTheme() {
+            const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            setTheme(nextTheme);
+        }
+
         // Countdown Timer Logic
         function updateCountdown() {
             const targetDate = new Date();
@@ -604,6 +674,8 @@
 
         // Initialize first accordion
         window.addEventListener('DOMContentLoaded', () => {
+            updateThemeControl();
+
             const firstAccordion = document.querySelector('.accordion-item button');
             if (firstAccordion) toggleAccordion(firstAccordion);
         });

@@ -122,6 +122,22 @@ The design system balances technical precision with a confident, modern aestheti
 ## Colors
 The palette is rooted in a structured hierarchy of blues. **Navy** serves as the primary anchor for text and deep backgrounds, providing a sense of authority. **Royal** acts as the primary action color, while **Sky** provides energetic accents and secondary UI states. **Mist** is the foundational neutral for surfaces. **Spark** is used sparingly as a high-contrast functional accent for critical highlights or notifications.
 
+### Dark theme palette
+
+The dark theme uses navy surfaces instead of pure black to preserve the MAYAM identity and maintain visual depth.
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `dark-background` | `#07111F` | Page background |
+| `dark-surface` | `#0B1728` | Navigation and primary surfaces |
+| `dark-surface-high` | `#13243A` | Cards, chips, and elevated surfaces |
+| `dark-on-surface` | `#F4F7FB` | Primary text |
+| `dark-on-surface-variant` | `#BDC9D8` | Secondary text |
+| `dark-outline` | `#71839B` | Borders and separators |
+| `dark-accent` | `#B2C5FF` | Interactive accents and highlights |
+
+The page detects the operating-system preference on the first visit and stores an explicit user selection under `mayam-theme`. Theme controls must expose their current state and the action available to assistive technologies.
+
 ## Typography
 This design system utilizes **Montserrat** as its primary typographic workhorse to convey confidence and modernity. 
 - **Headings and Emphasis:** Use Montserrat Semibold (600) to establish a strong visual hierarchy.
