@@ -103,6 +103,7 @@ rounded:
   md: 0.375rem
   lg: 0.5rem
   xl: 0.75rem
+  2xl: 1rem
   full: 9999px
 spacing:
   base: 8px
@@ -159,13 +160,19 @@ Depth is communicated through **Tonal Layers** and **Ambient Shadows**. Surfaces
 - **Level 2 (Popovers):** White surface with a 12% opacity Navy shadow, 16px blur, 4px Y-offset.
 - **Level 3 (Modals):** White surface with a 20% opacity Navy shadow, 32px blur, 8px Y-offset.
 
+## Motion
+
+Hero motion should communicate creative momentum without competing with the headline or CTA. The approved hero uses a three-layer composition: on desktop, moving the pointer through the left, center, or right region brings the corresponding image to the center; on tablets, tapping or focusing an image performs the same exchange. Positional exchanges use a calm 1040ms transition, while depth and shadow adjustments use 440ms. Pointer parallax remains subtle and resets when leaving the hero.
+
+Below 768px the layered composition is static and its controls are disabled. Transitions and parallax must also respect `prefers-reduced-motion`.
+
 ## Shapes
-The shape language is **Soft** and professional. This design system uses a consistent 4px (0.25rem) base radius for standard components like buttons and inputs. Larger containers and cards utilize the `rounded-lg` (8px) token. This subtle rounding softens the technical geometry without appearing too casual or "bubbly."
+The shape language is **Soft** and professional. Compact controls and inputs may use the 4px (0.25rem) base radius. Marketing cards and prominent media containers use `rounded-2xl` (16px), while primary call-to-action buttons use the pill-shaped `rounded-full` token. This creates a friendlier landing-page rhythm without making small technical elements feel overly soft.
 
 ## Components
-- **Buttons:** Primary buttons use Royal background with White Montserrat Semibold text. Secondary buttons use a Navy outline with 1.5px stroke width.
+- **Buttons:** Primary buttons use Royal background with White Montserrat Semibold text and a pill-shaped radius. Secondary buttons use a Navy outline with 1.5px stroke width.
 - **Inputs:** Use Mist background with a 1px border. On focus, the border transitions to Royal with a 2px outer "halo" in Sky at 20% opacity.
-- **Cards:** Use Level 1 elevation with 8px corner radius. Padding is strictly set to 24px (md) for internal content.
+- **Cards:** Marketing cards use Level 1 elevation with a 16px corner radius. Cards within the same row must stretch to equal height and align their repeated elements. Padding is strictly set to 24px (md) for internal content.
 - **Chips:** Utilize Space Grotesk labels for a technical look. Backgrounds are low-opacity tints of the primary colors (e.g., Sky at 10% opacity).
 - **Lists:** Clean dividers using 1px Mist-dark (approx 10% darker than base Mist) with 16px vertical spacing between items.
 - **Data Display:** Tables and charts should prioritize Space Grotesk for numerical values to emphasize the technical nature of the data.
