@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MAYAM - Creación de Contenido con IA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,500&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c5c6d0",
+                        "tertiary-container": "#001f30",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#0040a2",
+                        "on-surface-variant": "#44474f",
+                        "primary-fixed-dim": "#b1c6f9",
+                        "primary-container": "#001b44",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container": "#eceef0",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed": "#001a42",
+                        "secondary-fixed": "#dae2ff",
+                        "surface-container-low": "#f2f4f6",
+                        "tertiary-fixed-dim": "#89ceff",
+                        "tertiary-fixed": "#c9e6ff",
+                        "on-error-container": "#93000a",
+                        "background": "#f7f9fb",
+                        "on-background": "#191c1e",
+                        "primary-fixed": "#d8e2ff",
+                        "primary": "#00020a",
+                        "secondary": "#0453cd",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-fixed-variant": "#314671",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#001848",
+                        "tertiary": "#000205",
+                        "on-tertiary-container": "#008dc9",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#004c6e",
+                        "secondary-container": "#356ee7",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-fixed-dim": "#b2c5ff",
+                        "inverse-primary": "#b1c6f9",
+                        "surface-dim": "#d8dadc",
+                        "on-secondary-container": "#fefcff",
+                        "surface-bright": "#f7f9fb",
+                        "surface-tint": "#495e8a",
+                        "surface": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-tertiary-fixed": "#001e2f",
+                        "outline": "#75777f",
+                        "surface-variant": "#e0e3e5",
+                        // Branding specific aliases from the provided list
+                        "spark": "#356ee7", // Mapping secondary-container to spark for the UI logic
+                        "dark-navy": "#001b44", // Mapping primary-container
+                        "dark-mist": "#001f30", // Mapping tertiary-container
+                        "mist": "#f2f4f6" // Mapping surface-container-low
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "section-v-sm": "64px",
+                        "section-v-lg": "96px",
+                        "container-max": "1200px",
+                        "margin-safe": "24px"
+                    },
+                    "fontFamily": {
+                        "body": ["Montserrat", "sans-serif"],
+                        "heading": ["Montserrat", "sans-serif"],
+                        "label-md": ["Space Grotesk", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Montserrat', sans-serif; font-weight: 400; }
+        h1, h2, h3, h4, .font-semibold-mont { font-family: 'Montserrat', sans-serif; font-weight: 600; }
+        .italic-mont { font-family: 'Montserrat', sans-serif; font-weight: 500; font-style: italic; }
+        
+        .diagonal-cut {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        .rhombus-pattern {
+            background-image: radial-gradient(rgba(0, 27, 68, 0.05) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .dark .rhombus-pattern {
+            background-image: radial-gradient(rgba(177, 198, 249, 0.05) 1px, transparent 1px);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-active .accordion-content {
+            max-height: 500px;
+        }
+        .scale-up-hover:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface transition-colors duration-300 overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-dark-navy/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-margin-safe py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<img alt="MAYAM Logo" class="h-8 dark:hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLczJ4W0amWmrnvQNe2Po8BxvPWQgBI-0vDE17g72NzKstBDbMB5BAmUsPD7qm4Wn7fMSNm8pb8A-bNRUGD_P2oqe7nxrtmJoVciJ_SAezF8FlixpRdAUgVur7c_wIyKrLtB-MqtVJM7H24UbfsRBzKb6B1L40zzGDZ-9hn-QJbNqUoujbRv_-bSl1qs4UawXd_3R6JmeFWU1TtlrRgphA0_QnaXzfmJCndnv43Bipwfrk1ppaR7bmzJ0Q4RbvzYjLOlm0vFpnT0Q"/>
+<img alt="MAYAM Logo Dark" class="h-8 hidden dark:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA03Mwa3hrTMX9bbzNn2ij6qV6VgQcwGWZ-8sFpjqK7tYZVGYnGZNnkQhFyXUsBTo8SqwqG9kDOr6brgB4KZHTWiDT4U29-WzyNtfvVkdxjy7tg9mM9xg1WUsVlF7AyWM0CvvPD1ytMXJbNqBOIVCyK-ikR_ZFnxBneIZfn7dk0B2MeUkv09Aw_Vf3UlajDbwN45g8yY9cnLLVegebb7wCjmcGysuXj_U8CsVj8shEAq17v5tFdJ7QaxPlpfOx5l5hMlXb_ypqyyY8"/>
+<span class="font-semibold-mont text-xl text-on-surface dark:text-surface-bright"></span>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#programa">Programa</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#stack">Stack</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#instructor">Instructor</a>
+<button class="p-2 rounded-full hover:bg-surface-container-high dark:hover:bg-dark-mist transition-all" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined text-secondary dark:text-inverse-primary">dark_mode</span>
+</button>
+</div>
+<button class="md:hidden p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative pt-32 pb-section-v-lg px-margin-safe overflow-hidden">
+<div class="max-w-container-max mx-auto grid lg:grid-cols-2 gap-12 items-center">
+<div class="z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container dark:bg-dark-mist rounded-lg mb-6">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="font-label-md text-xs text-secondary dark:text-inverse-primary uppercase tracking-wider">INSCRIPCIONES ABIERTAS</span>
+</div>
+<h1 class="text-4xl md:text-6xl text-on-surface dark:text-surface-bright mb-6 leading-tight">
+                    Creación de <span class="text-secondary dark:text-secondary-fixed-dim">Contenido con IA</span>
+</h1>
+<p class="text-lg text-on-surface-variant dark:text-outline-variant mb-8 max-w-lg leading-relaxed">
+                    Deja de luchar con las herramientas técnicas y conviértete en el director creativo de tu marca. Aprende el flujo de trabajo exacto que usan los profesionales para escalar contenido sin quemarse.
+                </p>
+<!-- Countdown -->
+<div class="grid grid-cols-4 gap-4 mb-10 max-w-sm">
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="days">00</div>
+<div class="font-label-md text-[10px] opacity-60">DÍAS</div>
+</div>
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="hours">00</div>
+<div class="font-label-md text-[10px] opacity-60">HORAS</div>
+</div>
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="minutes">00</div>
+<div class="font-label-md text-[10px] opacity-60">MIN</div>
+</div>
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="seconds">00</div>
+<div class="font-label-md text-[10px] opacity-60">SEG</div>
+</div>
+</div>
+<a class="inline-flex items-center justify-center h-14 px-10 bg-secondary text-white font-semibold-mont rounded-lg scale-up-hover transition-all active:scale-95 shadow-lg shadow-secondary/20" href="#programa">
+                    Inscríbete al curso
+                </a>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-primary-container/5 dark:bg-primary/10 blur-3xl rounded-full"></div>
+<div class="relative rounded-lg overflow-hidden border border-outline-variant/30 shadow-2xl">
+<img class="w-full aspect-square object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANrDtZHrdom4DTUcDGAc-yCRfeoXWRz9cJOtvqSt6oipWCfIMff5QY3oBuHyvoUJUL2duTmQIzu06z6jOyTLrY6HEvMk9H6YCnq6Puw1EPlhp1MPn6--dbiBRlNUvPNj0JsQgvp4EbUHRqGH_j2Do86tBFXsUCWwkT9OO-2J1aa-bGyIX66t9T__tN5PCFeb6UooNRYLJWeYhBwxv2WPG9fjlee3iA5bNT4MLlL89umAhm4deOYtcT0upb_Tzh8JtTodJB73tEIzE"/>
+<!-- Edit Circle Signature -->
+<div class="absolute bottom-8 right-8 group">
+<div class="relative">
+<svg class="w-24 h-24 text-secondary animate-[spin_10s_linear_infinite]" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="10 5" stroke-width="2"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl">auto_fix_high</span>
+</div>
+</div>
+<div class="absolute bottom-full right-0 mb-4 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-white p-3 rounded-lg font-label-md text-[10px] w-48 shadow-xl">
+                            "Transforma una idea simple en contenido viral con un solo click"
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- El Dolor Section -->
+<section class="bg-dark-navy py-section-v-lg px-margin-safe text-white diagonal-cut relative z-20">
+<div class="max-w-container-max mx-auto text-center">
+<span class="font-label-md text-xs text-secondary-fixed mb-4 block tracking-widest uppercase">URGENCIA CRÍTICA</span>
+<h2 class="text-3xl md:text-5xl mb-8 max-w-4xl mx-auto leading-tight font-semibold-mont">
+                "La IA no va a reemplazar tu trabajo, <span class="text-secondary-fixed">una empresa que usa IA lo va a hacer</span>."
+            </h2>
+<div class="h-1 w-24 bg-secondary-fixed mx-auto"></div>
+</div>
+</section>
+<!-- MAYAM & Rompe las Barreras -->
+<section class="py-section-v-lg px-margin-safe bg-mist dark:bg-dark-mist transition-colors">
+<div class="max-w-container-max mx-auto grid lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="text-3xl mb-6 text-on-surface dark:text-surface-bright font-semibold-mont">Rompe las Barreras Técnicas</h2>
+<div class="space-y-6">
+<p class="text-on-surface-variant dark:text-outline-variant">
+                        En MAYAM creemos que el futuro pertenece a los creadores, no a los técnicos. El mayor obstáculo hoy no es la tecnología, sino el miedo a lo complejo.
+                    </p>
+<p class="font-semibold-mont text-secondary dark:text-secondary-fixed-dim">
+                        No necesitas saber programar. No necesitas ser un diseñador experto.
+                    </p>
+<p class="text-on-surface-variant dark:text-outline-variant">
+                        Nuestra metodología está diseñada para que cualquier emprendedor pueda dominar el flujo de producción de contenido en días, no en meses. Te enseñamos a ser el piloto de tu propia plataforma.
+                    </p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-lg border border-outline-variant/30 shadow-sm">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-4xl mb-4">speed</span>
+<h3 class="font-semibold-mont mb-2">Velocidad X10</h3>
+<p class="text-sm opacity-70">Produce en horas lo que antes te tomaba semanas enteras.</p>
+</div>
+<div class="p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-lg border border-outline-variant/30 shadow-sm mt-8">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-4xl mb-4">brush</span>
+<h3 class="font-semibold-mont mb-2">Calidad Premium</h3>
+<p class="text-sm opacity-70">Estética profesional sin contratar una agencia externa.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Tu Stack Gratuito -->
+<section class="py-section-v-lg px-margin-safe bg-surface-container-low dark:bg-dark-navy relative overflow-hidden">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-12">
+<h2 class="text-3xl md:text-5xl mb-4 font-semibold-mont">Transformación Real</h2>
+<p class="text-on-surface-variant dark:text-outline-variant">Mira cómo la IA eleva la calidad de tu contenido en segundos.</p>
+</div>
+<div class="relative rounded-lg overflow-hidden border border-outline-variant/30 shadow-2xl max-w-4xl mx-auto">
+<img alt="Comparación Sin IA vs Con IA" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtv5IiVE4NoSU7sFD6iL5xLgqxI0pN-ePENnhnkA1Chv20AtHDaj--_JneqSztN3JWgPS1ApyRzrwPcytwXLLj5tYaGZAp5k3wnUVkbL3e3BkZnKTOn6nXHrWx2ZcaxYJ56JsYblwFHC4nXQc-fb2t3Tr_PCPF7xS_JBDtCpWGDGq1hkFLfUxpBGlCP4NROQXJKWsIgp8xi6vEKIIfewjB0wuEzdFCe6ZViGaSuM5C8fMa4VOEIsXBSIg"/>
+</div>
+</div>
+</section><section class="py-section-v-lg px-margin-safe rhombus-pattern" id="stack">
+<div class="max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="text-3xl md:text-5xl mb-4 font-semibold-mont">Tu Stack Gratuito</h2>
+<p class="text-on-surface-variant dark:text-outline-variant">Domina las herramientas más potentes del mercado sin gastar un centavo adicional.</p>
+</div>
+<div class="grid md:grid-cols-3 gap-gutter">
+<!-- Gemini -->
+<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all">
+<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">psychology</span>
+</div>
+<div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
+<h3 class="text-xl mb-3 font-semibold-mont">Gemini</h3>
+<p class="text-sm opacity-70 mb-6">Tu cerebro estratégico. Generación de ideas, guiones y estructuras de contenido optimizadas para tu nicho.</p>
+<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+                        "Actúa como un experto en marketing viral..."
+                    </div>
+</div>
+<!-- Flow -->
+<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all md:translate-y-4">
+<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">videocam</span>
+</div>
+<div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
+<h3 class="text-xl mb-3 font-semibold-mont">Flow</h3>
+<p class="text-sm opacity-70 mb-6">Producción de video cinematográfico. Convierte texto en clips visuales impactantes que retienen a tu audiencia.</p>
+<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+                        "Cinematic lighting, high quality motion..."
+                    </div>
+</div>
+<!-- Canva -->
+<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all">
+<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">dashboard_customize</span>
+</div>
+<div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
+<h3 class="text-xl mb-3 font-semibold-mont">Canva</h3>
+<p class="text-sm opacity-70 mb-6">El lienzo final. Diseño de carruseles, miniaturas y piezas gráficas integrando recursos generados por IA.</p>
+<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+                        "Estructura visual minimalista..."
+                    </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Resultado Final -->
+<section class="py-section-v-lg px-margin-safe bg-surface-container-low dark:bg-dark-navy">
+<div class="max-w-container-max mx-auto">
+<h2 class="text-3xl md:text-5xl text-center mb-16 font-semibold-mont">Resultados Reales</h2>
+<div class="grid md:grid-cols-2 gap-12">
+<div class="space-y-6">
+<div class="relative group">
+<div class="absolute -inset-2 bg-gradient-to-r from-secondary to-primary-fixed opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
+<div class="relative rounded-lg overflow-hidden shadow-2xl">
+<img alt="AI Video Result" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEXbMxcliSb_pLVETKyaEL5gGSRH5AnGvtXiGQSnCp4dSxKQn2Pfs8e0GW67pdJcf8Gg6Z_1YYArj5Mj9aK1tPLPEiR2MYIX95Xp9wobWjrtOG0znzIy91Hyl0eO4eCdDN09COjTXYH1TtLwfLx1KetkgTwVo45Nx7E_tK2NUKlS7GwPz7AHxeHKGGWUp3EyNo3MD-MGI24DRclZM1P5MNPJdlqCzfLxP-uBuCY2ZDLegdxuDQHjPa3pLDEqhFC2UTVND2dDMeOeg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-dark-navy/80 to-transparent flex items-end p-8">
+<span class="font-label-md text-white tracking-widest text-[10px]">PRODUCCIÓN DE VIDEO 30S</span>
+</div>
+</div>
+</div>
+<p class="text-center italic-mont opacity-60">Guión, visuales y subtítulos generados 100% con IA.</p>
+</div>
+<div class="space-y-6">
+<div class="relative group">
+<div class="absolute -inset-2 bg-gradient-to-r from-secondary-fixed to-secondary opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
+<div class="relative rounded-lg overflow-hidden shadow-2xl">
+<img alt="AI Carousel Result" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfH-pBO8ofX8azztOemKhOV_AiuK6OrWbPz9a8UpQSKVy_6UgZWrA0kvUBMZKAkGQoPrc3aPv2NmP-Ir_AWluJGKDx2ce8rAok8U0OHNFPDXnlVXMhHhtoJpq_UkDiY1uK0N5XXoNPny0vXDdqczigv6Ll0Mp9wnabTcJGhcpm9RxDn7sgEZSLtQ5Lig7akgAFH5pEVLrGyrRmhdpMYkv113xwNgfQQmaNPTjXDt3FvMI-66URKG3PQ_9SIKfYwMtKhCMt9rLJva4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-dark-navy/80 to-transparent flex items-end p-8">
+<span class="font-label-md text-white tracking-widest text-[10px]">ESTRATEGIA DE CARRUSEL</span>
+</div>
+</div>
+</div>
+<p class="text-center italic-mont opacity-60">Diseño y narrativa coherente con identidad de marca.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Temario -->
+<section class="py-section-v-lg px-margin-safe bg-mist dark:bg-dark-mist" id="programa">
+<div class="max-w-3xl mx-auto">
+<h2 class="text-3xl md:text-5xl mb-16 text-center font-semibold-mont">El Camino del Piloto</h2>
+<div class="relative">
+<!-- Vertical Line -->
+<div class="absolute left-6 top-0 bottom-0 w-0.5 bg-secondary/10"></div>
+<!-- Session 1 -->
+<div class="relative pl-16 mb-8 accordion-item group">
+<div class="absolute left-3 top-2 w-6 h-6 rounded-full bg-secondary border-4 border-mist dark:border-dark-mist z-10 transition-transform group-hover:scale-125"></div>
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<div>
+<span class="font-label-md text-[10px] text-secondary dark:text-secondary-fixed-dim mb-1 block uppercase tracking-wider">SESIÓN 01</span>
+<h3 class="text-lg font-semibold-mont">Fundamentos, tu marca y tu público</h3>
+</div>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant space-y-4">
+<p>Establece la base de tu imperio digital. Definiremos la voz de tu marca mediante prompts avanzados y el perfil psicológico de tu cliente ideal.</p>
+<ul class="space-y-2">
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Arquetipos de marca con IA</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Mapa de empatía generativo</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Estructura de "Storytelling" para redes</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Session 2 -->
+<div class="relative pl-16 mb-8 accordion-item group">
+<div class="absolute left-3 top-2 w-6 h-6 rounded-full bg-secondary border-4 border-mist dark:border-dark-mist z-10 transition-transform group-hover:scale-125"></div>
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<div>
+<span class="font-label-md text-[10px] text-secondary dark:text-secondary-fixed-dim mb-1 block uppercase tracking-wider">SESIÓN 02</span>
+<h3 class="text-lg font-semibold-mont">Estrategia de contenido y prompts</h3>
+</div>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant space-y-4">
+<p>Crea un calendario de 30 días en 30 minutos. Aprenderás ingeniería de prompts para obtener resultados consistentes.</p>
+<ul class="space-y-2">
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Framework de prompts MAYAM</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Curación de contenido asistida</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Hooks que detienen el scroll</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Session 3 -->
+<div class="relative pl-16 mb-8 accordion-item group">
+<div class="absolute left-3 top-2 w-6 h-6 rounded-full bg-secondary border-4 border-mist dark:border-dark-mist z-10 transition-transform group-hover:scale-125"></div>
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<div>
+<span class="font-label-md text-[10px] text-secondary dark:text-secondary-fixed-dim mb-1 block uppercase tracking-wider">SESIÓN 03</span>
+<h3 class="text-lg font-semibold-mont">Imágenes con Gemini y video con Flow</h3>
+</div>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant space-y-4">
+<p>Entra en el laboratorio visual. Generaremos visuales de alto impacto y aprenderemos a animarlos para crear videos profesionales.</p>
+<ul class="space-y-2">
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Prompting visual avanzado</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Generación de video cinemático</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Coherencia estética entre piezas</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Session 4 -->
+<div class="relative pl-16 accordion-item group">
+<div class="absolute left-3 top-2 w-6 h-6 rounded-full bg-secondary border-4 border-mist dark:border-dark-mist z-10 transition-transform group-hover:scale-125"></div>
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<div>
+<span class="font-label-md text-[10px] text-secondary dark:text-secondary-fixed-dim mb-1 block uppercase tracking-wider">SESIÓN 04</span>
+<h3 class="text-lg font-semibold-mont">Edición, carrusel y publicación</h3>
+</div>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant space-y-4">
+<p>El ensamblaje final. Aprenderás a orquestar todas las piezas en Canva y CapCut para un acabado de lujo.</p>
+<ul class="space-y-2">
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Plantillas dinámicas de Canva</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Subtitulado e hilos narrativos</li>
+<li class="flex gap-2 items-center"><span class="material-symbols-outlined text-secondary text-sm">check_circle</span> Estrategia de distribución multicanal</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Instructor Section -->
+<section class="py-section-v-lg px-margin-safe" id="instructor">
+<div class="max-w-container-max mx-auto">
+<div class="bg-dark-navy text-white rounded-lg overflow-hidden flex flex-col md:flex-row items-stretch border border-outline-variant/10 shadow-2xl">
+<div class="md:w-1/2 relative min-h-[400px]">
+<img class="absolute inset-0 w-full h-full object-cover" src="images/Nestor.jpg"/>
+</div>
+<div class="md:w-1/2 p-12 lg:p-20 flex flex-col justify-center">
+<span class="font-label-md text-secondary-fixed mb-4 tracking-widest uppercase text-xs">TU INSTRUCTOR</span>
+<h2 class="text-3xl mb-6 font-semibold-mont">Nestor - Fundador de MAYAM</h2>
+<p class="opacity-80 mb-8 leading-relaxed">
+                        Nestor ha dedicado los últimos años a simplificar la intersección entre la creatividad y la tecnología. Con un enfoque en la practicidad, ha ayudado a cientos de dueños de negocio a transicionar de "hacedores manuales" a directores de su propia visión estratégica usando IA.
+                    </p>
+<div class="grid grid-cols-2 gap-8 border-t border-white/10 pt-8">
+<div>
+<div class="text-3xl font-semibold-mont text-secondary-fixed">1k+</div>
+<div class="font-label-md text-[10px] opacity-60 tracking-widest uppercase">CONTENIDOS GENERADOS</div>
+</div>
+<div>
+<div class="text-3xl font-semibold-mont text-secondary-fixed">100+</div>
+<div class="font-label-md text-[10px] opacity-60 tracking-widest uppercase">ALUMNOS FORMADOS</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Final -->
+<section class="py-section-v-lg px-margin-safe relative">
+<div class="absolute inset-0 bg-secondary/5 dark:bg-primary/10"></div>
+<div class="max-w-4xl mx-auto text-center relative z-10">
+<h2 class="text-3xl md:text-5xl mb-8 font-semibold-mont">¿Listo para convertirte en el piloto de tu marca?</h2>
+<p class="text-on-surface-variant dark:text-outline-variant mb-12 max-w-2xl mx-auto text-lg">
+                No dejes que la complejidad te detenga. Únete hoy a MAYAM y descubre por qué todo es posible cuando tienes las herramientas correctas.
+            </p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center">
+<a class="inline-flex items-center justify-center h-16 px-10 bg-secondary text-white font-semibold-mont text-lg rounded-lg scale-up-hover transition-all shadow-xl shadow-secondary/30" href="#">
+                    Inscríbete ahora
+                </a>
+<a class="inline-flex items-center justify-center h-16 px-10 border-2 border-secondary text-secondary dark:text-secondary-fixed-dim font-semibold-mont text-lg rounded-lg hover:bg-secondary/5 transition-all" href="#">
+                    Ver temario completo
+                </a>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<section class="py-section-v-lg px-margin-safe bg-mist dark:bg-dark-mist" id="faq">
+<div class="max-w-3xl mx-auto">
+<h2 class="text-3xl md:text-5xl mb-16 text-center font-semibold-mont">Preguntas Frecuentes</h2>
+<div class="space-y-4">
+<!-- FAQ 1 -->
+<div class="accordion-item group">
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<h3 class="text-lg font-semibold-mont">¿Necesito saber de diseño o tecnología?</h3>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant">
+                        No. Nuestra metodología está diseñada para que cualquier persona, sin importar su nivel técnico, pueda dominar las herramientas.
+                    </div>
+</div>
+</div>
+<!-- FAQ 2 -->
+<div class="accordion-item group">
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<h3 class="text-lg font-semibold-mont">¿Necesito pagar alguna suscripción?</h3>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant">
+                        No, todo el stack de herramientas que enseñamos es gratuito o tiene versiones gratuitas altamente funcionales.
+                    </div>
+</div>
+</div>
+<!-- FAQ 3 -->
+<div class="accordion-item group">
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<h3 class="text-lg font-semibold-mont">¿Qué necesito para tomar el curso?</h3>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant">
+                        Solo una cuenta de Google y muchas ganas de aprender a escalar tu marca.
+                    </div>
+</div>
+</div>
+<!-- FAQ 4 -->
+<div class="accordion-item group">
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<h3 class="text-lg font-semibold-mont">¿Las sesiones quedan grabadas?</h3>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant">
+                        Sí, todas las sesiones quedan grabadas para que puedas consultarlas durante 1 mes después de finalizar el curso.
+                    </div>
+</div>
+</div>
+<!-- FAQ 5 -->
+<div class="accordion-item group">
+<button class="w-full text-left bg-surface-container-lowest dark:bg-dark-navy p-6 rounded-lg border border-outline-variant/30 shadow-sm flex justify-between items-center hover:border-secondary/50 transition-colors" onclick="toggleAccordion(this)">
+<h3 class="text-lg font-semibold-mont">¿Cuánto dura cada sesión?</h3>
+<span class="material-symbols-outlined transition-transform">expand_more</span>
+</button>
+<div class="accordion-content">
+<div class="p-6 pt-2 text-sm text-on-surface-variant dark:text-outline-variant">
+                        Cada sesión tiene una duración de 2 horas, sumando un total de 8 horas de formación intensiva.
+                    </div>
+</div>
+</div>
+</div>
+</div>
+</section><footer class="bg-dark-navy py-12 px-margin-safe text-white relative overflow-hidden border-t border-white/5">
+<!-- Pattern Background -->
+<div class="absolute inset-0 opacity-10 rhombus-pattern"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<div class="flex flex-col items-center gap-4 text-center w-full">
+<div class="text-2xl font-semibold-mont text-secondary-fixed mb-4">MAYAM</div>
+<div class="flex flex-wrap justify-center gap-8 mb-8">
+<a class="font-label-md text-[10px] uppercase tracking-widest text-outline-variant hover:text-secondary-fixed transition-colors" href="#">Privacidad</a>
+<a class="font-label-md text-[10px] uppercase tracking-widest text-outline-variant hover:text-secondary-fixed transition-colors" href="#">Términos</a>
+<a class="font-label-md text-[10px] uppercase tracking-widest text-outline-variant hover:text-secondary-fixed transition-colors" href="#">Contacto</a>
+</div>
+<div class="h-px w-24 bg-white/10 mb-8"></div>
+<p class="font-label-md text-secondary-fixed tracking-[0.2em] text-xs font-semibold">TODO ES POSIBLE.</p>
+<p class="text-outline-variant text-[10px] mt-4 font-label-md">© 2024 MAYAM. TODOS LOS DERECHOS RESERVADOS.</p>
+</div>
+</div>
+</footer>
+<script>
+        // Countdown Timer Logic
+        function updateCountdown() {
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 3); 
+            
+            function update() {
+                const now = new Date();
+                const diff = targetDate - now;
+                
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                if (document.getElementById('days')) document.getElementById('days').innerText = String(d).padStart(2, '0');
+                if (document.getElementById('hours')) document.getElementById('hours').innerText = String(h).padStart(2, '0');
+                if (document.getElementById('minutes')) document.getElementById('minutes').innerText = String(m).padStart(2, '0');
+                if (document.getElementById('seconds')) document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+            }
+            
+            update();
+            setInterval(update, 1000);
+        }
+        
+        updateCountdown();
+
+        // Accordion Logic
+        function toggleAccordion(btn) {
+            const item = btn.closest('.accordion-item');
+            const isActive = item.classList.contains('accordion-active');
+            
+            // Close all
+            document.querySelectorAll('.accordion-item').forEach(el => {
+                el.classList.remove('accordion-active');
+                const icon = el.querySelector('.material-symbols-outlined:last-child');
+                if(icon) icon.style.transform = 'rotate(0deg)';
+            });
+            
+            if (!isActive) {
+                item.classList.add('accordion-active');
+                const icon = btn.querySelector('.material-symbols-outlined:last-child');
+                if(icon) icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Initialize first accordion
+        window.addEventListener('DOMContentLoaded', () => {
+            const firstAccordion = document.querySelector('.accordion-item button');
+            if (firstAccordion) toggleAccordion(firstAccordion);
+        });
+    </script>
+</body></html>
