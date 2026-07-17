@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 
-<html class="light" lang="es"><head>
+<html lang="es"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>MAYAM - Creación de Contenido con IA</title>
+<script>
+        // Apply the preferred theme before painting the page to avoid a flash.
+        (() => {
+            const storageKey = 'mayam-theme';
+            let savedTheme = null;
+
+            try {
+                savedTheme = localStorage.getItem(storageKey);
+            } catch (error) {
+                // The system preference remains available if storage is blocked.
+            }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme === 'light' || savedTheme === 'dark'
+                ? savedTheme
+                : (prefersDark ? 'dark' : 'light');
+
+            document.documentElement.classList.toggle('dark', theme === 'dark');
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,500&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -58,17 +79,26 @@
                         "on-tertiary-fixed": "#001e2f",
                         "outline": "#75777f",
                         "surface-variant": "#e0e3e5",
+                        // Dark theme palette
+                        "dark-background": "#07111f",
+                        "dark-surface": "#0b1728",
+                        "dark-surface-high": "#13243a",
+                        "dark-on-surface": "#f4f7fb",
+                        "dark-on-surface-variant": "#bdc9d8",
+                        "dark-outline": "#71839b",
+                        "dark-accent": "#b2c5ff",
                         // Branding specific aliases from the provided list
                         "spark": "#356ee7", // Mapping secondary-container to spark for the UI logic
-                        "dark-navy": "#001b44", // Mapping primary-container
-                        "dark-mist": "#001f30", // Mapping tertiary-container
+                        "dark-navy": "#0b1728", // Dark surface and permanent brand panels
+                        "dark-mist": "#13243a", // Elevated dark surface
                         "mist": "#f2f4f6" // Mapping surface-container-low
                     },
                     "borderRadius": {
                         "DEFAULT": "0.125rem",
                         "lg": "0.25rem",
                         "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "2xl": "1rem",
+                        "full": "9999px"
                     },
                     "spacing": {
                         "md": "24px",
@@ -96,6 +126,7 @@
     </script>
 <style>
         body { font-family: 'Montserrat', sans-serif; font-weight: 400; }
+        :focus-visible { outline: 3px solid #89ceff; outline-offset: 3px; }
         h1, h2, h3, h4, .font-semibold-mont { font-family: 'Montserrat', sans-serif; font-weight: 600; }
         .italic-mont { font-family: 'Montserrat', sans-serif; font-weight: 500; font-style: italic; }
         
@@ -120,28 +151,122 @@
         .scale-up-hover:hover {
             transform: scale(1.02);
         }
+
+        .hero-showcase {
+            --hero-x: 0px;
+            --hero-y: 0px;
+            --hero-x-inverse: 0px;
+            --hero-y-inverse: 0px;
+            min-height: 470px;
+            perspective: 1200px;
+        }
+        .hero-layer {
+            position: absolute;
+            appearance: none;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid rgba(197, 198, 208, 0.25);
+            border-radius: 24px;
+            background: #0b1728;
+            box-shadow: 0 24px 54px rgba(0, 27, 68, 0.24);
+            transition:
+                left 1040ms cubic-bezier(0.22, 1, 0.36, 1),
+                top 1040ms cubic-bezier(0.22, 1, 0.36, 1),
+                width 1040ms cubic-bezier(0.22, 1, 0.36, 1),
+                height 1040ms cubic-bezier(0.22, 1, 0.36, 1),
+                transform 440ms ease-out,
+                opacity 440ms ease,
+                box-shadow 440ms ease;
+        }
+        .hero-layer img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .hero-layer[data-slot="left"] {
+            z-index: 1;
+            left: -2%;
+            top: 18%;
+            width: 46%;
+            height: 58%;
+            transform: translate3d(var(--hero-x), var(--hero-y), 0) rotate(-8deg);
+        }
+        .hero-layer[data-slot="right"] {
+            z-index: 2;
+            left: 59%;
+            top: 12%;
+            width: 42%;
+            height: 63%;
+            transform: translate3d(var(--hero-x-inverse), var(--hero-y), 0) rotate(7deg);
+        }
+        .hero-layer[data-slot="center"] {
+            z-index: 3;
+            left: 13%;
+            top: 7%;
+            width: 74%;
+            height: 76%;
+            transform: translate3d(var(--hero-x-inverse), var(--hero-y-inverse), 0);
+            box-shadow: 0 30px 68px rgba(0, 27, 68, 0.32);
+        }
+        .hero-layer-caption {
+            position: absolute;
+            z-index: 5;
+            right: 7%;
+            bottom: 4%;
+            max-width: 230px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: #0453cd;
+            color: white;
+            box-shadow: 0 18px 40px rgba(4, 83, 205, 0.28);
+            pointer-events: none;
+        }
+        @media (min-width: 768px) {
+            .hero-layer {
+                cursor: pointer;
+            }
+            .hero-layer:not([data-slot="center"]):hover {
+                border-color: rgba(137, 206, 255, 0.75);
+                box-shadow: 0 26px 62px rgba(4, 83, 205, 0.28);
+            }
+        }
+        @media (max-width: 767px) {
+            .hero-showcase { min-height: 400px; }
+            .hero-layer { pointer-events: none; transition: none; }
+            .hero-layer[data-slot="center"] { left: 9%; width: 82%; }
+            .hero-layer[data-slot="left"],
+            .hero-layer[data-slot="right"] { opacity: 0.7; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .hero-layer {
+                transition: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-surface text-on-surface transition-colors duration-300 overflow-x-hidden">
+<body class="bg-surface text-on-surface dark:bg-dark-background dark:text-dark-on-surface transition-colors duration-300 overflow-x-hidden">
 <!-- TopNavBar -->
-<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-dark-navy/80 backdrop-blur-md border-b border-outline-variant/20">
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-dark-surface/90 backdrop-blur-md border-b border-outline-variant/20 dark:border-dark-outline/30">
 <div class="flex justify-between items-center px-margin-safe py-4 max-w-container-max mx-auto">
 <div class="flex items-center gap-4">
 <img alt="MAYAM Logo" class="h-8 dark:hidden" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLczJ4W0amWmrnvQNe2Po8BxvPWQgBI-0vDE17g72NzKstBDbMB5BAmUsPD7qm4Wn7fMSNm8pb8A-bNRUGD_P2oqe7nxrtmJoVciJ_SAezF8FlixpRdAUgVur7c_wIyKrLtB-MqtVJM7H24UbfsRBzKb6B1L40zzGDZ-9hn-QJbNqUoujbRv_-bSl1qs4UawXd_3R6JmeFWU1TtlrRgphA0_QnaXzfmJCndnv43Bipwfrk1ppaR7bmzJ0Q4RbvzYjLOlm0vFpnT0Q"/>
 <img alt="MAYAM Logo Dark" class="h-8 hidden dark:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA03Mwa3hrTMX9bbzNn2ij6qV6VgQcwGWZ-8sFpjqK7tYZVGYnGZNnkQhFyXUsBTo8SqwqG9kDOr6brgB4KZHTWiDT4U29-WzyNtfvVkdxjy7tg9mM9xg1WUsVlF7AyWM0CvvPD1ytMXJbNqBOIVCyK-ikR_ZFnxBneIZfn7dk0B2MeUkv09Aw_Vf3UlajDbwN45g8yY9cnLLVegebb7wCjmcGysuXj_U8CsVj8shEAq17v5tFdJ7QaxPlpfOx5l5hMlXb_ypqyyY8"/>
-<span class="font-semibold-mont text-xl text-on-surface dark:text-surface-bright"></span>
+<span class="font-semibold-mont text-xl text-on-surface dark:text-dark-on-surface"></span>
 </div>
+<div class="flex items-center gap-2">
 <div class="hidden md:flex gap-8 items-center">
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#programa">Programa</a>
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#stack">Stack</a>
-<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-outline-variant hover:text-secondary transition-colors" href="#instructor">Instructor</a>
-<button class="p-2 rounded-full hover:bg-surface-container-high dark:hover:bg-dark-mist transition-all" onclick="document.documentElement.classList.toggle('dark')">
-<span class="material-symbols-outlined text-secondary dark:text-inverse-primary">dark_mode</span>
-</button>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#programa">Programa</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#stack">Stack</a>
+<a class="font-label-md text-xs uppercase tracking-widest text-on-surface-variant dark:text-dark-on-surface-variant hover:text-secondary dark:hover:text-dark-accent transition-colors" href="#instructor">Instructor</a>
 </div>
-<button class="md:hidden p-2">
+<button aria-label="Activar modo oscuro" aria-pressed="false" class="p-2 rounded-full text-secondary dark:text-dark-accent hover:bg-surface-container-high dark:hover:bg-dark-surface-high transition-all" id="theme-toggle" onclick="toggleTheme()" title="Activar modo oscuro" type="button">
+<span aria-hidden="true" class="material-symbols-outlined" id="theme-icon">dark_mode</span>
+</button>
+<button aria-label="Abrir menú" class="md:hidden p-2 text-on-surface dark:text-dark-on-surface" type="button">
 <span class="material-symbols-outlined">menu</span>
 </button>
+</div>
 </div>
 </nav>
 <!-- Hero Section -->
@@ -160,45 +285,36 @@
                 </p>
 <!-- Countdown -->
 <div class="grid grid-cols-4 gap-4 mb-10 max-w-sm">
-<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-xl text-center border border-outline-variant/20">
 <div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="days">00</div>
 <div class="font-label-md text-[10px] opacity-60">DÍAS</div>
 </div>
-<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-xl text-center border border-outline-variant/20">
 <div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="hours">00</div>
 <div class="font-label-md text-[10px] opacity-60">HORAS</div>
 </div>
-<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-xl text-center border border-outline-variant/20">
 <div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="minutes">00</div>
 <div class="font-label-md text-[10px] opacity-60">MIN</div>
 </div>
-<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-lg text-center border border-outline-variant/20">
+<div class="bg-surface-container-low dark:bg-dark-mist p-3 rounded-xl text-center border border-outline-variant/20">
 <div class="text-2xl font-semibold-mont text-secondary dark:text-secondary-fixed-dim" id="seconds">00</div>
 <div class="font-label-md text-[10px] opacity-60">SEG</div>
 </div>
 </div>
-<a class="inline-flex items-center justify-center h-14 px-10 bg-secondary text-white font-semibold-mont rounded-lg scale-up-hover transition-all active:scale-95 shadow-lg shadow-secondary/20" href="#programa">
+<p aria-live="polite" class="-mt-6 mb-8 font-label-md text-[11px] tracking-wider text-on-surface-variant dark:text-dark-on-surface-variant" id="countdown-status">PRÓXIMA FECHA POR CONFIRMAR</p>
+<a class="inline-flex items-center justify-center h-14 px-10 bg-secondary text-white font-semibold-mont rounded-full scale-up-hover transition-all active:scale-95 shadow-lg shadow-secondary/20" data-enrollment-link href="#programa">
                     Inscríbete al curso
                 </a>
 </div>
-<div class="relative">
-<div class="absolute -inset-4 bg-primary-container/5 dark:bg-primary/10 blur-3xl rounded-full"></div>
-<div class="relative rounded-lg overflow-hidden border border-outline-variant/30 shadow-2xl">
-<img class="w-full aspect-square object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANrDtZHrdom4DTUcDGAc-yCRfeoXWRz9cJOtvqSt6oipWCfIMff5QY3oBuHyvoUJUL2duTmQIzu06z6jOyTLrY6HEvMk9H6YCnq6Puw1EPlhp1MPn6--dbiBRlNUvPNj0JsQgvp4EbUHRqGH_j2Do86tBFXsUCWwkT9OO-2J1aa-bGyIX66t9T__tN5PCFeb6UooNRYLJWeYhBwxv2WPG9fjlee3iA5bNT4MLlL89umAhm4deOYtcT0upb_Tzh8JtTodJB73tEIzE"/>
-<!-- Edit Circle Signature -->
-<div class="absolute bottom-8 right-8 group">
-<div class="relative">
-<svg class="w-24 h-24 text-secondary animate-[spin_10s_linear_infinite]" viewbox="0 0 100 100">
-<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="10 5" stroke-width="2"></circle>
-</svg>
-<div class="absolute inset-0 flex items-center justify-center">
-<span class="material-symbols-outlined text-secondary text-3xl">auto_fix_high</span>
-</div>
-</div>
-<div class="absolute bottom-full right-0 mb-4 opacity-0 group-hover:opacity-100 transition-opacity bg-inverse-surface text-white p-3 rounded-lg font-label-md text-[10px] w-48 shadow-xl">
-                            "Transforma una idea simple en contenido viral con un solo click"
-                        </div>
-</div>
+<div class="hero-showcase relative" id="hero-showcase">
+<div aria-hidden="true" class="absolute inset-8 bg-secondary/10 dark:bg-dark-accent/10 blur-3xl rounded-full"></div>
+<button aria-label="Mostrar contenido para redes al centro" class="hero-layer" data-caption="Diseña piezas que detienen el scroll y conectan con tu audiencia." data-kicker="Contenido para redes" data-origin="left" data-slot="left" type="button"><img alt="" loading="lazy" src="images/celular-redes-fondotech.png"/></button>
+<button aria-label="Mostrar estrategia de marketing al centro" class="hero-layer" data-caption="Convierte datos e ideas en una estrategia de contenido que avanza." data-kicker="Estrategia con IA" data-origin="center" data-slot="center" type="button"><img alt="" fetchpriority="high" src="images/laptop-persona-marketing.png"/></button>
+<button aria-label="Mostrar producción inteligente al centro" class="hero-layer" data-caption="Produce, mide y mejora desde un espacio creativo conectado." data-kicker="Producción inteligente" data-origin="right" data-slot="right" type="button"><img alt="" loading="lazy" src="images/laptop-microfono-luzazul.png"/></button>
+<div class="hero-layer-caption">
+<span class="font-label-md text-[10px] uppercase tracking-widest opacity-75" id="hero-layer-kicker">Estrategia con IA</span>
+<p class="mt-1 text-sm font-semibold-mont" id="hero-layer-copy">Convierte datos e ideas en una estrategia de contenido que avanza.</p>
 </div>
 </div>
 </div>
@@ -230,13 +346,13 @@
                     </p>
 </div>
 </div>
-<div class="grid grid-cols-2 gap-4">
-<div class="p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-lg border border-outline-variant/30 shadow-sm">
+<div class="grid sm:grid-cols-2 gap-6 items-stretch">
+<div class="h-full p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-2xl border border-outline-variant/30 shadow-sm">
 <span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-4xl mb-4">speed</span>
 <h3 class="font-semibold-mont mb-2">Velocidad X10</h3>
 <p class="text-sm opacity-70">Produce en horas lo que antes te tomaba semanas enteras.</p>
 </div>
-<div class="p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-lg border border-outline-variant/30 shadow-sm mt-8">
+<div class="h-full p-6 bg-surface-container-lowest dark:bg-dark-navy rounded-2xl border border-outline-variant/30 shadow-sm">
 <span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-4xl mb-4">brush</span>
 <h3 class="font-semibold-mont mb-2">Calidad Premium</h3>
 <p class="text-sm opacity-70">Estética profesional sin contratar una agencia externa.</p>
@@ -251,8 +367,8 @@
 <h2 class="text-3xl md:text-5xl mb-4 font-semibold-mont">Transformación Real</h2>
 <p class="text-on-surface-variant dark:text-outline-variant">Mira cómo la IA eleva la calidad de tu contenido en segundos.</p>
 </div>
-<div class="relative rounded-lg overflow-hidden border border-outline-variant/30 shadow-2xl max-w-4xl mx-auto">
-<img alt="Comparación Sin IA vs Con IA" class="w-full h-auto object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtv5IiVE4NoSU7sFD6iL5xLgqxI0pN-ePENnhnkA1Chv20AtHDaj--_JneqSztN3JWgPS1ApyRzrwPcytwXLLj5tYaGZAp5k3wnUVkbL3e3BkZnKTOn6nXHrWx2ZcaxYJ56JsYblwFHC4nXQc-fb2t3Tr_PCPF7xS_JBDtCpWGDGq1hkFLfUxpBGlCP4NROQXJKWsIgp8xi6vEKIIfewjB0wuEzdFCe6ZViGaSuM5C8fMa4VOEIsXBSIg"/>
+<div class="relative rounded-2xl overflow-hidden border border-outline-variant/30 shadow-2xl max-w-4xl mx-auto">
+<img alt="Comparación del contenido antes y después de aplicar herramientas de IA" class="w-full h-auto object-cover" loading="lazy" src="images/antes-despues.png"/>
 </div>
 </div>
 </section><section class="py-section-v-lg px-margin-safe rhombus-pattern" id="stack">
@@ -261,40 +377,40 @@
 <h2 class="text-3xl md:text-5xl mb-4 font-semibold-mont">Tu Stack Gratuito</h2>
 <p class="text-on-surface-variant dark:text-outline-variant">Domina las herramientas más potentes del mercado sin gastar un centavo adicional.</p>
 </div>
-<div class="grid md:grid-cols-3 gap-gutter">
+<div class="grid md:grid-cols-3 gap-gutter items-stretch">
 <!-- Gemini -->
-<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all">
-<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<div class="h-full flex flex-col bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-2xl border border-outline-variant/30 group hover:border-secondary/30 transition-all">
+<div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">psychology</span>
 </div>
 <div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
 <h3 class="text-xl mb-3 font-semibold-mont">Gemini</h3>
 <p class="text-sm opacity-70 mb-6">Tu cerebro estratégico. Generación de ideas, guiones y estructuras de contenido optimizadas para tu nicho.</p>
-<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+<div class="mt-auto text-xs bg-dark-navy text-primary-fixed p-3 rounded-xl border-l-4 border-secondary font-mono">
                         "Actúa como un experto en marketing viral..."
                     </div>
 </div>
 <!-- Flow -->
-<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all md:translate-y-4">
-<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<div class="h-full flex flex-col bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-2xl border border-outline-variant/30 group hover:border-secondary/30 transition-all">
+<div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">videocam</span>
 </div>
 <div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
 <h3 class="text-xl mb-3 font-semibold-mont">Flow</h3>
 <p class="text-sm opacity-70 mb-6">Producción de video cinematográfico. Convierte texto en clips visuales impactantes que retienen a tu audiencia.</p>
-<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+<div class="mt-auto text-xs bg-dark-navy text-primary-fixed p-3 rounded-xl border-l-4 border-secondary font-mono">
                         "Cinematic lighting, high quality motion..."
                     </div>
 </div>
 <!-- Canva -->
-<div class="bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-lg border border-outline-variant/30 group hover:border-secondary/30 transition-all">
-<div class="w-16 h-16 rounded-lg bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+<div class="h-full flex flex-col bg-surface-container-lowest dark:bg-dark-mist p-8 rounded-2xl border border-outline-variant/30 group hover:border-secondary/30 transition-all">
+<div class="w-16 h-16 rounded-xl bg-secondary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined text-secondary dark:text-secondary-fixed-dim text-3xl">dashboard_customize</span>
 </div>
 <div class="inline-block px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-label-md rounded mb-4 tracking-wider">$0 — SIN SUSCRIPCIÓN</div>
 <h3 class="text-xl mb-3 font-semibold-mont">Canva</h3>
 <p class="text-sm opacity-70 mb-6">El lienzo final. Diseño de carruseles, miniaturas y piezas gráficas integrando recursos generados por IA.</p>
-<div class="text-xs bg-dark-navy text-primary-fixed p-3 rounded border-l-4 border-secondary font-mono">
+<div class="mt-auto text-xs bg-dark-navy text-primary-fixed p-3 rounded-xl border-l-4 border-secondary font-mono">
                         "Estructura visual minimalista..."
                     </div>
 </div>
@@ -309,7 +425,7 @@
 <div class="space-y-6">
 <div class="relative group">
 <div class="absolute -inset-2 bg-gradient-to-r from-secondary to-primary-fixed opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
-<div class="relative rounded-lg overflow-hidden shadow-2xl">
+<div class="relative rounded-2xl overflow-hidden shadow-2xl">
 <img alt="AI Video Result" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEXbMxcliSb_pLVETKyaEL5gGSRH5AnGvtXiGQSnCp4dSxKQn2Pfs8e0GW67pdJcf8Gg6Z_1YYArj5Mj9aK1tPLPEiR2MYIX95Xp9wobWjrtOG0znzIy91Hyl0eO4eCdDN09COjTXYH1TtLwfLx1KetkgTwVo45Nx7E_tK2NUKlS7GwPz7AHxeHKGGWUp3EyNo3MD-MGI24DRclZM1P5MNPJdlqCzfLxP-uBuCY2ZDLegdxuDQHjPa3pLDEqhFC2UTVND2dDMeOeg"/>
 <div class="absolute inset-0 bg-gradient-to-t from-dark-navy/80 to-transparent flex items-end p-8">
 <span class="font-label-md text-white tracking-widest text-[10px]">PRODUCCIÓN DE VIDEO 30S</span>
@@ -321,7 +437,7 @@
 <div class="space-y-6">
 <div class="relative group">
 <div class="absolute -inset-2 bg-gradient-to-r from-secondary-fixed to-secondary opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
-<div class="relative rounded-lg overflow-hidden shadow-2xl">
+<div class="relative rounded-2xl overflow-hidden shadow-2xl">
 <img alt="AI Carousel Result" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfH-pBO8ofX8azztOemKhOV_AiuK6OrWbPz9a8UpQSKVy_6UgZWrA0kvUBMZKAkGQoPrc3aPv2NmP-Ir_AWluJGKDx2ce8rAok8U0OHNFPDXnlVXMhHhtoJpq_UkDiY1uK0N5XXoNPny0vXDdqczigv6Ll0Mp9wnabTcJGhcpm9RxDn7sgEZSLtQ5Lig7akgAFH5pEVLrGyrRmhdpMYkv113xwNgfQQmaNPTjXDt3FvMI-66URKG3PQ_9SIKfYwMtKhCMt9rLJva4"/>
 <div class="absolute inset-0 bg-gradient-to-t from-dark-navy/80 to-transparent flex items-end p-8">
 <span class="font-label-md text-white tracking-widest text-[10px]">ESTRATEGIA DE CARRUSEL</span>
@@ -463,10 +579,10 @@
                 No dejes que la complejidad te detenga. Únete hoy a MAYAM y descubre por qué todo es posible cuando tienes las herramientas correctas.
             </p>
 <div class="flex flex-col sm:flex-row gap-6 justify-center">
-<a class="inline-flex items-center justify-center h-16 px-10 bg-secondary text-white font-semibold-mont text-lg rounded-lg scale-up-hover transition-all shadow-xl shadow-secondary/30" href="#">
+<a class="inline-flex items-center justify-center h-16 px-10 bg-secondary text-white font-semibold-mont text-lg rounded-lg scale-up-hover transition-all shadow-xl shadow-secondary/30" data-enrollment-link href="#programa">
                     Inscríbete ahora
                 </a>
-<a class="inline-flex items-center justify-center h-16 px-10 border-2 border-secondary text-secondary dark:text-secondary-fixed-dim font-semibold-mont text-lg rounded-lg hover:bg-secondary/5 transition-all" href="#">
+<a class="inline-flex items-center justify-center h-16 px-10 border-2 border-secondary text-secondary dark:text-secondary-fixed-dim font-semibold-mont text-lg rounded-lg hover:bg-secondary/5 transition-all" href="#programa">
                     Ver temario completo
                 </a>
 </div>
@@ -556,31 +672,205 @@
 </div>
 </div>
 </footer>
+<script src="course-config.js"></script>
 <script>
+        const themeStorageKey = 'mayam-theme';
+
+        function updateThemeControl() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const button = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-icon');
+            const actionLabel = isDark ? 'Activar modo claro' : 'Activar modo oscuro';
+
+            if (button) {
+                button.setAttribute('aria-label', actionLabel);
+                button.setAttribute('aria-pressed', String(isDark));
+                button.setAttribute('title', actionLabel);
+            }
+
+            if (icon) icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+        }
+
+        function setTheme(theme, persist = true) {
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = theme;
+
+            if (persist) {
+                try {
+                    localStorage.setItem(themeStorageKey, theme);
+                } catch (error) {
+                    // The theme still works for the current page if storage is blocked.
+                }
+            }
+
+            updateThemeControl();
+        }
+
+        function toggleTheme() {
+            const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+            setTheme(nextTheme);
+        }
+
+        function initializeHeroGallery() {
+            const showcase = document.getElementById('hero-showcase');
+            const layers = Array.from(document.querySelectorAll('.hero-layer[data-origin]'));
+            const kicker = document.getElementById('hero-layer-kicker');
+            const copy = document.getElementById('hero-layer-copy');
+            const interactiveViewport = window.matchMedia('(min-width: 768px)');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let activeRegion = null;
+
+            if (!showcase || !layers.length) return;
+
+            function updateCaption(layer) {
+                if (kicker) kicker.textContent = layer.dataset.kicker || '';
+                if (copy) copy.textContent = layer.dataset.caption || '';
+            }
+
+            function setCenteredLayer(origin) {
+                if (!interactiveViewport.matches) return;
+
+                const selectedLayer = layers.find(layer => layer.dataset.origin === origin);
+                const centeredLayer = layers.find(layer => layer.dataset.slot === 'center');
+                if (!selectedLayer || !centeredLayer) return;
+
+                if (selectedLayer !== centeredLayer) {
+                    const previousSlot = selectedLayer.dataset.slot;
+                    centeredLayer.dataset.slot = previousSlot;
+                    selectedLayer.dataset.slot = 'center';
+                }
+
+                layers.forEach(layer => {
+                    layer.setAttribute('aria-pressed', String(layer.dataset.slot === 'center'));
+                });
+
+                updateCaption(selectedLayer);
+            }
+
+            function resetGallery() {
+                layers.forEach(layer => {
+                    layer.dataset.slot = layer.dataset.origin;
+                    layer.tabIndex = interactiveViewport.matches ? 0 : -1;
+                    layer.setAttribute('aria-pressed', String(layer.dataset.origin === 'center'));
+                    layer.setAttribute('aria-disabled', String(!interactiveViewport.matches));
+                });
+                const centerLayer = layers.find(layer => layer.dataset.origin === 'center');
+                if (centerLayer) updateCaption(centerLayer);
+                activeRegion = null;
+            }
+
+            layers.forEach(layer => {
+                layer.addEventListener('click', () => setCenteredLayer(layer.dataset.origin));
+                layer.addEventListener('focus', () => setCenteredLayer(layer.dataset.origin));
+            });
+
+            showcase.addEventListener('pointermove', event => {
+                if (!interactiveViewport.matches || event.pointerType === 'touch') return;
+                const bounds = showcase.getBoundingClientRect();
+                const horizontalPosition = (event.clientX - bounds.left) / bounds.width;
+                const normalizedX = horizontalPosition - 0.5;
+                const normalizedY = ((event.clientY - bounds.top) / bounds.height) - 0.5;
+                const region = horizontalPosition < 0.34 ? 'left' : (horizontalPosition > 0.66 ? 'right' : 'center');
+
+                if (region !== activeRegion) {
+                    activeRegion = region;
+                    setCenteredLayer(region);
+                }
+
+                if (!reduceMotion) {
+                    const x = normalizedX * 14;
+                    const y = normalizedY * 10;
+
+                    showcase.style.setProperty('--hero-x', `${x}px`);
+                    showcase.style.setProperty('--hero-y', `${y}px`);
+                    showcase.style.setProperty('--hero-x-inverse', `${-x}px`);
+                    showcase.style.setProperty('--hero-y-inverse', `${-y}px`);
+                }
+            });
+
+            showcase.addEventListener('pointerleave', () => {
+                activeRegion = null;
+                showcase.style.setProperty('--hero-x', '0px');
+                showcase.style.setProperty('--hero-y', '0px');
+                showcase.style.setProperty('--hero-x-inverse', '0px');
+                showcase.style.setProperty('--hero-y-inverse', '0px');
+            });
+
+            interactiveViewport.addEventListener('change', resetGallery);
+            resetGallery();
+        }
+
         // Countdown Timer Logic
         function updateCountdown() {
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 3); 
-            
+            const config = window.MAYAM_COURSE_CONFIG || {};
+            const targetDate = new Date(config.countdownTarget || '');
+            const status = document.getElementById('countdown-status');
+            const fields = {
+                days: document.getElementById('days'),
+                hours: document.getElementById('hours'),
+                minutes: document.getElementById('minutes'),
+                seconds: document.getElementById('seconds')
+            };
+
+            function renderValues(days, hours, minutes, seconds) {
+                if (fields.days) fields.days.innerText = String(days).padStart(2, '0');
+                if (fields.hours) fields.hours.innerText = String(hours).padStart(2, '0');
+                if (fields.minutes) fields.minutes.innerText = String(minutes).padStart(2, '0');
+                if (fields.seconds) fields.seconds.innerText = String(seconds).padStart(2, '0');
+            }
+
+            if (Number.isNaN(targetDate.getTime())) {
+                renderValues('--', '--', '--', '--');
+                if (status) status.innerText = config.datePendingMessage || 'PRÓXIMA FECHA POR CONFIRMAR';
+                return;
+            }
+
             function update() {
                 const now = new Date();
                 const diff = targetDate - now;
-                
+
+                if (diff <= 0) {
+                    renderValues(0, 0, 0, 0);
+                    if (status) status.innerText = config.countdownFinishedMessage || 'EL CURSO HA COMENZADO';
+                    return false;
+                }
+
                 const d = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                if (document.getElementById('days')) document.getElementById('days').innerText = String(d).padStart(2, '0');
-                if (document.getElementById('hours')) document.getElementById('hours').innerText = String(h).padStart(2, '0');
-                if (document.getElementById('minutes')) document.getElementById('minutes').innerText = String(m).padStart(2, '0');
-                if (document.getElementById('seconds')) document.getElementById('seconds').innerText = String(s).padStart(2, '0');
+
+                renderValues(d, h, m, s);
+                if (status) status.innerText = `CUENTA REGRESIVA · ${targetDate.toLocaleString('es-MX', { dateStyle: 'long', timeStyle: 'short' })}`;
+                return true;
             }
-            
-            update();
-            setInterval(update, 1000);
+
+            if (update()) {
+                const countdownInterval = setInterval(() => {
+                    if (!update()) clearInterval(countdownInterval);
+                }, 1000);
+            }
         }
-        
+
+        function configureEnrollmentLinks() {
+            const config = window.MAYAM_COURSE_CONFIG || {};
+            const url = config.registrationUrl || '#programa';
+
+            document.querySelectorAll('[data-enrollment-link]').forEach(link => {
+                link.setAttribute('href', url);
+
+                if (config.registrationOpensNewTab && !url.startsWith('#')) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                } else {
+                    link.removeAttribute('target');
+                    link.removeAttribute('rel');
+                }
+            });
+        }
+
+        configureEnrollmentLinks();
         updateCountdown();
 
         // Accordion Logic
@@ -604,6 +894,9 @@
 
         // Initialize first accordion
         window.addEventListener('DOMContentLoaded', () => {
+            updateThemeControl();
+            initializeHeroGallery();
+
             const firstAccordion = document.querySelector('.accordion-item button');
             if (firstAccordion) toggleAccordion(firstAccordion);
         });
